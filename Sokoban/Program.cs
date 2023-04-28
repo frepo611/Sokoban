@@ -12,8 +12,8 @@ namespace Sokoban
         public static void Main(string[] args)
         {
 
-        Level level = new Level();
-        GameManager game = new GameManager(level);
+        Level level = new();
+        GameManager game = new(level);
 
             while (true)
             {
@@ -42,8 +42,10 @@ namespace Sokoban
                     case ConsoleKey.UpArrow:
                         deltaY = -1;
                         break;
-                    case ConsoleKey.Escape:
+                    case ConsoleKey.Escape: // exit
                         return;
+                    case ConsoleKey.Q: // restart level
+                        break;
                 }
                 game.Move(deltaY, deltaX);
             }

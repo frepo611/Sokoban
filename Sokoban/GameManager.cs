@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Sokoban;
 
@@ -9,16 +10,19 @@ public class GameManager
     private (int, int) _playerPos;
     private int _PlayerX;
     private int _PlayerY;
+    private int _moves;
 
-        public GameManager(Level level)
+    public GameManager(Level level)
         {
+        _moves = 0;
         _level = level;
         _playerPos = GetPlayerPos();
         _PlayerX = _playerPos.Item2;
         _PlayerY = _playerPos.Item1;
+        
 
         }
-        private (int, int) GetPlayerPos()
+    private (int, int) GetPlayerPos()
         {
             for (int y = 0; y < _level.Height; y++)
             {
@@ -34,7 +38,7 @@ public class GameManager
             throw new Exception();
         }
         
-        private static char ReplaceLandcapeGraphic(int input)
+    private static char ReplaceLandcapeGraphic(int input)
         {
             return input switch
             {
@@ -44,7 +48,7 @@ public class GameManager
                 _ => ' ',
             };
         }
-        private static char ReplaceStonesGraphic(int input)
+    private static char ReplaceStonesGraphic(int input)
         {
             return input switch
             {
@@ -54,7 +58,7 @@ public class GameManager
                 _ => ' ',
             };
         }
-        public void DrawLevel()
+    public void DrawLevel()
         {
             for (int y = 0; y < _level.Height; y++)
             {
@@ -82,46 +86,49 @@ public class GameManager
             Console.WriteLine($"Height: {_level.Height}, Width: {_level.Width}".PadRight(Console.BufferWidth));
 
         }
-        public void Move(int deltaY, int deltaX)
+    public void Move(int deltaY, int deltaX)
         {
+        int newY = _PlayerY + deltaY;
+        int newX = _PlayerX + deltaX;
 
-            int newY = _PlayerY + deltaY;
-            int newX = _PlayerX + deltaX;
-
-            // hits a wall or a stone in target
-            if ((_level.Landscape[newY, newX] == 1) | _level.Stones[newY, newX] == 2)
+        // hits a wall or a stone in target
+        if ((_level.Landscape[newY, newX] == 1) | _level.Stones[newY, newX] == 2)
+        {
+            return;
+        }
+        // hits a stone, tries to move it
+        if (_level.Stones[newY, newX] == 1)
+        {
+            int stoneNewY = newY + deltaY;
+            int stoneNewX = newX + deltaX;
+            // can it be moved here?
+            if ((_level.Landscape[stoneNewY, stoneNewX] == 1) |
+                (_level.Stones[stoneNewY, stoneNewX] == 2) |
+                (_level.Stones[stoneNewY, stoneNewX] == 1))
             {
                 return;
             }
-            // hits a stone, tries to move it
-            if (_level.Stones[newY, newX] == 1)
+
+            // updating the stones
+            _level.Stones[newY, newX] = 0;
+            _level.Stones[stoneNewY, stoneNewX] = 1;
+
+            // updating the landscape, hit a target?
+            if (_level.Landscape[stoneNewY, stoneNewX] == 2)
             {
-                int stoneNewY = newY + deltaY;
-                int stoneNewX = newX + deltaX;
-                // can it be moved here?
-                if ((_level.Landscape[stoneNewY, stoneNewX] == 1) |
-                    (_level.Stones[stoneNewY, stoneNewX] == 2) |
-                    (_level.Stones[stoneNewY, stoneNewX] == 1))
-                {
-                    return;
-                }
-
-                // updating the stones
-                _level.Stones[newY, newX] = 0;
-                _level.Stones[stoneNewY, stoneNewX] = 1;
-
-                // updating the landscape, hit a target?
-                if (_level.Landscape[stoneNewY, stoneNewX] == 2)
-                {
-                    _level.Stones[stoneNewY, stoneNewX] = 2;
-                    _level.Landscape[stoneNewY, stoneNewX] = 0;
-                }
+                _level.Stones[stoneNewY, stoneNewX] = 2;
+                _level.Landscape[stoneNewY, stoneNewX] = 0;
             }
-            _PlayerY = newY;
-            _PlayerX = newX;
-            Console.SetCursorPosition(0, _level.Height + 3);
-            Console.WriteLine($"PlayerX: {_PlayerX}, PlayerY: {_PlayerY}".PadRight(Console.BufferWidth));
         }
+
+        _PlayerY = newY;
+        _PlayerX = newX;
+        _moves++;
+        Console.SetCursorPosition(_level.Width + 2, 0);
+        Console.WriteLine($"Moves: {_moves}".PadRight(Console.BufferWidth));
+        Console.SetCursorPosition(0, _level.Height + 3);
+        Console.WriteLine($"PlayerX: {_PlayerX}, PlayerY: {_PlayerY}".PadRight(Console.BufferWidth));
+    }
 
         internal bool IsComplete()
         {
