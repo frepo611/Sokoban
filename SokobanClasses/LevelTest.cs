@@ -9,8 +9,7 @@ namespace SokobanClasses
 {
     internal class LevelTest
     {
-        000000000
-        var test = ObjectXMLSerializer<SokobanLevels>.Load("compact.slc");
+         SokobanLevels test = ObjectXMLSerializer<SokobanLevels>.Load("compact.slc");
 
     }
 }
