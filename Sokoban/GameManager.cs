@@ -1,42 +1,37 @@
-﻿using System;
+﻿using System.Drawing;
+using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Sokoban;
 
 
 public class GameManager
-    {
+{
     private Level _level;
     private Player _player;
-    /*private (int, int) _playerPos;
-    private int _PlayerX;
-    private int _PlayerY;*/
     private int _moves;
 
-    struct Player
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public (int, int) StartPosition { get; set; }
 
-    public Player((int, int) coord)
+    class Player
+    {
+        public Point Position { get; set; }
+
+        public Player(Point startPosition)
         {
-            this.StartPosition = coord;
-            this.X = coord.Item2;
-            this.Y = coord.Item1;
+            Position = startPosition;
         }
+
     }
     public GameManager(Level level)
         {
         _moves = 0;
         _level = level;
         _player = new Player(GetPlayerPos());
-        /*_PlayerX = _playerPos.Item2;
-        _PlayerY = _playerPos.Item1;*/
         
 
         }
-    private (int, int) GetPlayerPos()
+    private Point GetPlayerPos()
         {
             for (int y = 0; y < _level.Height; y++)
             {
@@ -45,7 +40,7 @@ public class GameManager
                     if (_level.Landscape[y, x] == 4)
                     {
                         _level.Landscape[y, x] = 0; // removes the player char
-                        return (y, x);
+                        return new Point(x,y);
                     }
                 }
             }
@@ -59,7 +54,7 @@ public class GameManager
                 0 => ' ',
                 1 => '#', // wall
                 2 => '$', // target
-                _ => ' ',
+                _ => throw new Exception("Unknown character in Landscape.")
             };
         }
     private static char ReplaceStonesGraphic(int input)
@@ -69,7 +64,7 @@ public class GameManager
                 0 => ' ',
                 1 => '.', // stone
                 2 => '*', // stone on target
-                _ => ' ',
+                _ => throw new Exception("Unknown character in Stones.")
             };
         }
     public void DrawLevel()
@@ -93,7 +88,7 @@ public class GameManager
                     }
                 }
             }
-            Console.SetCursorPosition(_player.X, _player.Y);
+            Console.SetCursorPosition(_player.Position.X, _player.Position.Y);
             Console.Write('@');
 
             Console.SetCursorPosition(0, _level.Height + 2);
@@ -106,7 +101,7 @@ public class GameManager
         int newX = _player.X + deltaX;
 
         // hits a wall or a stone in target
-        if ((_level.Landscape[newY, newX] == 1) | _level.Stones[newY, newX] == 2)
+        if ((_level.Landscape[newY, newX] == 1) || _level.Stones[newY, newX] == 2)
         {
             return;
         }
@@ -116,8 +111,8 @@ public class GameManager
             int stoneNewY = newY + deltaY;
             int stoneNewX = newX + deltaX;
             // can it be moved here?
-            if ((_level.Landscape[stoneNewY, stoneNewX] == 1) |
-                (_level.Stones[stoneNewY, stoneNewX] == 2) |
+            if ((_level.Landscape[stoneNewY, stoneNewX] == 1) ||
+                (_level.Stones[stoneNewY, stoneNewX] == 2) ||
                 (_level.Stones[stoneNewY, stoneNewX] == 1))
             {
                 return;

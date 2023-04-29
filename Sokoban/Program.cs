@@ -1,24 +1,26 @@
 ﻿using System;
 
-namespace Sokoban
-{
+namespace Sokoban;
 
-
-    public class Program
-    {                                                                   
-        public static void Main(string[] args)
+public class Program
+{                                                                   
+    public static void Main(string[] args)
+    {
+        var continueGame = true;
+        while (continueGame)
         {
+            Level level = new();
+            GameManager game = new(level);
 
-        Level level = new();
-        GameManager game = new(level);
-
-            while (true)
+            var continueGameRound = true;
+            while (continueGameRound && continueGame)
             {
                 game.DrawLevel();
-                if (game.IsComplete()) {
+                if (game.IsComplete())
+                {
                     Console.SetCursorPosition(0, level.Height + 3);
-                    Console.WriteLine($"Level complete!".PadRight(Console.BufferWidth));
-                    break;
+                    Console.WriteLine($"Level complete! Press any key to continue.".PadRight(Console.BufferWidth));
+                    continueGameRound = false;
                 }
                 var key = Console.ReadKey(true);
 
@@ -40,8 +42,10 @@ namespace Sokoban
                         deltaY = -1;
                         break;
                     case ConsoleKey.Escape: // exit
-                        return;
+                        continueGame = false;
+                        break;
                     case ConsoleKey.Q: // restart level
+                        continueGameRound = false;
                         break;
                 }
                 game.Move(deltaY, deltaX);
