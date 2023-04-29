@@ -7,18 +7,32 @@ namespace Sokoban;
 public class GameManager
     {
     private Level _level;
-    private (int, int) _playerPos;
+    private Player _player;
+    /*private (int, int) _playerPos;
     private int _PlayerX;
-    private int _PlayerY;
+    private int _PlayerY;*/
     private int _moves;
 
+    struct Player
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public (int, int) StartPosition { get; set; }
+
+    public Player((int, int) coord)
+        {
+            this.StartPosition = coord;
+            this.X = coord.Item2;
+            this.Y = coord.Item1;
+        }
+    }
     public GameManager(Level level)
         {
         _moves = 0;
         _level = level;
-        _playerPos = GetPlayerPos();
-        _PlayerX = _playerPos.Item2;
-        _PlayerY = _playerPos.Item1;
+        _player = new Player(GetPlayerPos());
+        /*_PlayerX = _playerPos.Item2;
+        _PlayerY = _playerPos.Item1;*/
         
 
         }
@@ -35,7 +49,7 @@ public class GameManager
                     }
                 }
             }
-            throw new Exception();
+            throw new Exception("Player starting position not found!");
         }
         
     private static char ReplaceLandcapeGraphic(int input)
@@ -79,7 +93,7 @@ public class GameManager
                     }
                 }
             }
-            Console.SetCursorPosition(_PlayerX, _PlayerY);
+            Console.SetCursorPosition(_player.X, _player.Y);
             Console.Write('@');
 
             Console.SetCursorPosition(0, _level.Height + 2);
@@ -88,8 +102,8 @@ public class GameManager
         }
     public void Move(int deltaY, int deltaX)
         {
-        int newY = _PlayerY + deltaY;
-        int newX = _PlayerX + deltaX;
+        int newY = _player.Y + deltaY;
+        int newX = _player.X + deltaX;
 
         // hits a wall or a stone in target
         if ((_level.Landscape[newY, newX] == 1) | _level.Stones[newY, newX] == 2)
@@ -121,16 +135,16 @@ public class GameManager
             }
         }
 
-        _PlayerY = newY;
-        _PlayerX = newX;
+        _player.Y = newY;
+        _player.X = newX;
         _moves++;
         Console.SetCursorPosition(_level.Width + 2, 0);
         Console.WriteLine($"Moves: {_moves}".PadRight(Console.BufferWidth));
         Console.SetCursorPosition(0, _level.Height + 3);
-        Console.WriteLine($"PlayerX: {_PlayerX}, PlayerY: {_PlayerY}".PadRight(Console.BufferWidth));
+        Console.WriteLine($"PlayerX: {_player.X}, PlayerY: {_player.Y}".PadRight(Console.BufferWidth));
     }
 
-        internal bool IsComplete()
+        public bool IsComplete()
         {
             for (int y = 0; y < _level.Height; y++)
             {
