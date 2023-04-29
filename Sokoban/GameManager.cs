@@ -95,11 +95,6 @@ public class GameManager
             Console.WriteLine($"Height: {_level.Height}, Width: {_level.Width}".PadRight(Console.BufferWidth));
 
     }
-    //public void Move(int deltaY, int deltaX)
-    //    {
-    //    int newY = _player.Position.Y + deltaY;
-    //    int newX = _player.Position.X + deltaX;
-
     public void Move(Size delta)
     {
         Point newPosition = Point.Add(_player.Position, delta);

@@ -8,9 +8,13 @@ public class Program
     public static void Main(string[] args)
     {
         var continueGame = true;
+        var levelId = 0;
         while (continueGame)
         {
-            Level level = new();
+            levelId++;
+            if (levelId > 3) levelId = 1;
+
+            Level level = new(levelId);
             GameManager game = new(level);
 
             var continueGameRound = true;
