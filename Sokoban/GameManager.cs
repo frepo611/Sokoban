@@ -94,49 +94,52 @@ public class GameManager
             Console.SetCursorPosition(0, _level.Height + 2);
             Console.WriteLine($"Height: {_level.Height}, Width: {_level.Width}".PadRight(Console.BufferWidth));
 
-        }
-    public void Move(int deltaY, int deltaX)
-        {
-        int newY = _player.Y + deltaY;
-        int newX = _player.X + deltaX;
+    }
+    //public void Move(int deltaY, int deltaX)
+    //    {
+    //    int newY = _player.Position.Y + deltaY;
+    //    int newX = _player.Position.X + deltaX;
 
+    public void Move(Size delta)
+    {
+        Point newPosition = Point.Add(_player.Position, delta);
+        
         // hits a wall or a stone in target
-        if ((_level.Landscape[newY, newX] == 1) || _level.Stones[newY, newX] == 2)
+        if ((_level.Landscape[newPosition.Y, newPosition.X] == 1) || _level.Stones[newPosition.Y, newPosition.X] == 2)
         {
             return;
         }
         // hits a stone, tries to move it
-        if (_level.Stones[newY, newX] == 1)
+        if (_level.Stones[newPosition.Y, newPosition.X] == 1)
         {
-            int stoneNewY = newY + deltaY;
-            int stoneNewX = newX + deltaX;
+            Point newStonePosition = Point.Add(newPosition, delta);
+
             // can it be moved here?
-            if ((_level.Landscape[stoneNewY, stoneNewX] == 1) ||
-                (_level.Stones[stoneNewY, stoneNewX] == 2) ||
-                (_level.Stones[stoneNewY, stoneNewX] == 1))
+            if ((_level.Landscape[newStonePosition.Y, newStonePosition.X] == 1) ||
+                (_level.Stones[newStonePosition.Y, newStonePosition.X] == 2) ||
+                (_level.Stones[newStonePosition.Y, newStonePosition.X] == 1))
             {
                 return;
             }
 
             // updating the stones
-            _level.Stones[newY, newX] = 0;
-            _level.Stones[stoneNewY, stoneNewX] = 1;
+            _level.Stones[newPosition.Y, newPosition.X] = 0;
+            _level.Stones[newStonePosition.Y, newStonePosition.X] = 1;
 
             // updating the landscape, hit a target?
-            if (_level.Landscape[stoneNewY, stoneNewX] == 2)
+            if (_level.Landscape[newStonePosition.Y, newStonePosition.X] == 2)
             {
-                _level.Stones[stoneNewY, stoneNewX] = 2;
-                _level.Landscape[stoneNewY, stoneNewX] = 0;
+                _level.Stones[newStonePosition.Y, newStonePosition.X] = 2;
+                _level.Landscape[newStonePosition.Y, newStonePosition.X] = 0;
             }
         }
 
-        _player.Y = newY;
-        _player.X = newX;
+        _player.Position = newPosition;
         _moves++;
         Console.SetCursorPosition(_level.Width + 2, 0);
         Console.WriteLine($"Moves: {_moves}".PadRight(Console.BufferWidth));
         Console.SetCursorPosition(0, _level.Height + 3);
-        Console.WriteLine($"PlayerX: {_player.X}, PlayerY: {_player.Y}".PadRight(Console.BufferWidth));
+        Console.WriteLine($"PlayerX: {_player.Position.X}, PlayerY: {_player.Position.Y}".PadRight(Console.BufferWidth));
     }
 
         public bool IsComplete()

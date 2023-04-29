@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Sokoban;
 
@@ -24,22 +25,21 @@ public class Program
                 }
                 var key = Console.ReadKey(true);
 
-                int deltaX = 0;
-                int deltaY = 0;
+                Size delta = new(0, 0);
 
                 switch (key.Key)
                 {
                     case ConsoleKey.LeftArrow:
-                        deltaX = -1;
+                        delta = new(-1,0);
                         break;
                     case ConsoleKey.RightArrow:
-                        deltaX = 1;
+                        delta = new(1, 0);
                         break;
                     case ConsoleKey.DownArrow:
-                        deltaY = 1;
+                        delta = new(0, 1);
                         break;
                     case ConsoleKey.UpArrow:
-                        deltaY = -1;
+                        delta = new(0, -1);
                         break;
                     case ConsoleKey.Escape: // exit
                         continueGame = false;
@@ -48,7 +48,10 @@ public class Program
                         continueGameRound = false;
                         break;
                 }
-                game.Move(deltaY, deltaX);
+                if (delta != new Size(0,0)) 
+                {
+                    game.Move(delta);
+                }
             }
         }
     }
