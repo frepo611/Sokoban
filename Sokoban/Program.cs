@@ -8,10 +8,9 @@ public class Program
     public static void Main(string[] args)
     {
         var continueGame = true;
-        var levelId = 0;
+        var levelId = 1;
         while (continueGame)
         {
-            levelId++;
             if (levelId > 3) levelId = 1;
 
             Level level = new(levelId);
@@ -25,6 +24,7 @@ public class Program
                 {
                     Console.SetCursorPosition(0, level.Height + 3);
                     Console.WriteLine($"Level complete! Press any key to continue.".PadRight(Console.BufferWidth));
+                    levelId++;
                     continueGameRound = false;
                 }
                 var key = Console.ReadKey(true);
