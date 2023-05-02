@@ -7,6 +7,7 @@ public class Program
 {                                                                   
     public static void Main(string[] args)
     {
+        Console.CursorVisible = false;
         var continueGame = true;
         var levelId = 3;
         while (continueGame)
