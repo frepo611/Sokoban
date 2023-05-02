@@ -24,7 +24,10 @@ public class Program
                 if (game.IsComplete())
                 {
                     Console.SetCursorPosition(0, level.Height + 3);
-                    Console.WriteLine($"Level complete! Press any key to continue.".PadRight(Console.BufferWidth));
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("LEVEL COMPLETE!");
+                    Console.WriteLine("Press any key to continue.");
+                    Console.ForegroundColor= ConsoleColor.White;
                     levelId++;
                     continueGameRound = false;
                 }
