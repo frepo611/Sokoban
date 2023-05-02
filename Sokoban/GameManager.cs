@@ -1,7 +1,4 @@
 ﻿using System.Drawing;
-using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Sokoban;
 
@@ -69,12 +66,25 @@ public class GameManager
         }
     public void DrawLevel()
     {
+        Console.SetCursorPosition(_level.Width + 2, 1);
+        Console.Write($"Level Id: {_level.LevelId}".PadRight(Console.BufferWidth));
+
         Console.SetCursorPosition(_level.Width + 2, 0);
-        Console.Write($"Moves: {_moves}".PadRight(Console.BufferWidth));
+        Console.Write($"Stone moves: {_moves}".PadRight(Console.BufferWidth));
+
+        Console.SetCursorPosition(_level.Width + 2, 3);
+        Console.WriteLine("Use arrow keys to move.".PadRight(Console.BufferWidth));
+
+        Console.SetCursorPosition(_level.Width + 2, 4);
+        Console.WriteLine("Press 'Q' to restart the level".PadRight(Console.BufferWidth));
+
+        Console.SetCursorPosition(_level.Width + 2, 5);
+        Console.WriteLine("Press 'Esc' to quit".PadRight(Console.BufferWidth));
 
         Console.SetCursorPosition(0, _level.Height + 3);
         Console.WriteLine($"PlayerX: {_player.Position.X}, PlayerY: {_player.Position.Y}".PadRight(Console.BufferWidth));
 
+        // draw the level, except stones and stones on target
         for (int y = 0; y < _level.Height; y++)
         {
             for (int x = 0; x < _level.Width; x++)
@@ -83,6 +93,7 @@ public class GameManager
                 Console.Write(ReplaceLandcapeGraphic(_level.Landscape[y, x]));
             }
         }
+        // draw stones and stones on target
         for (int y = 0; y < _level.Height; y++)
         {
             for (int x = 0; x < _level.Width; x++)
@@ -94,12 +105,9 @@ public class GameManager
                 }
             }
         }
+        //draw player
         Console.SetCursorPosition(_player.Position.X, _player.Position.Y);
         Console.Write('@');
-
-        Console.SetCursorPosition(0, _level.Height + 2);
-        Console.Write($"Height: {_level.Height}, Width: {_level.Width}".PadRight(Console.BufferWidth));
-
     }
     public void Move(Size delta)
     {
@@ -135,13 +143,11 @@ public class GameManager
                 _level.Landscape[newStonePosition.Y, newStonePosition.X] = 0;
             }
         }
-
         _player.Position = newPosition;
-
-        
     }
 
         public bool IsComplete()
+        //check for targets left
         {
             for (int y = 0; y < _level.Height; y++)
             {

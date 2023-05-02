@@ -8,14 +8,14 @@ public class Program
     public static void Main(string[] args)
     {
         var continueGame = true;
-        var levelId = 1;
+        var levelId = 3;
         while (continueGame)
         {
             if (levelId > 3) levelId = 1;
 
             Level level = new(levelId);
             GameManager game = new(level);
-
+            Console.Clear();
             var continueGameRound = true;
             while (continueGameRound && continueGame)
             {
