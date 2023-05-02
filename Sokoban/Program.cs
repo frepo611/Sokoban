@@ -9,11 +9,9 @@ public class Program
     {
         Console.CursorVisible = false;
         var continueGame = true;
-        var levelId = 3;
+        var levelId = 1;
         while (continueGame)
         {
-            if (levelId > 3) levelId = 1;
-
             Level level = new(levelId);
             GameManager game = new(level);
             Console.Clear();
@@ -29,6 +27,14 @@ public class Program
                     Console.WriteLine("Press any key to continue.");
                     Console.ForegroundColor= ConsoleColor.White;
                     levelId++;
+                    if (levelId > 3)
+                    {
+                        Console.SetCursorPosition(0, level.Height + 3);
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("ALL LEVELS COMPLETE!");
+                        Console.WriteLine("Press any key to exit.".PadRight(Console.BufferWidth));
+                        continueGame = false;
+                    }
                     continueGameRound = false;
                 }
                 var key = Console.ReadKey(true);

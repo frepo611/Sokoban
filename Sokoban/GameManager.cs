@@ -81,9 +81,6 @@ public class GameManager
         Console.SetCursorPosition(_level.Width + 2, 5);
         Console.WriteLine("Press 'Esc' to quit".PadRight(Console.BufferWidth));
 
-        //Console.SetCursorPosition(0, _level.Height + 3);
-        //Console.WriteLine($"PlayerX: {_player.Position.X}, PlayerY: {_player.Position.Y}".PadRight(Console.BufferWidth));
-
         // draw the level, except stones and stones on target
         for (int y = 0; y < _level.Height; y++)
         {
